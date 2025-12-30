@@ -2,9 +2,6 @@ import { motion } from "framer-motion";
 
 import { Star } from "lucide-react";
 
-
-import { Link } from "react-router-dom";
-import logo from "../assets/cdaxxlogo.png";
 import CoursePlans from "../components/CoursePlans";
 import HeroCarousel from "../components/HeroCarousel";
 import LearningExperience from "../components/LearningExperience";
@@ -14,7 +11,7 @@ import CertificationSection from "../components/CertificationSection";
 import JavaCareerCard from "../components/JavaCareerCard";
 import BuildProject from "../components/BuildProject";
 import WhyChooseUs from "../components/WhyChooseUs";
-
+import Testimonials from "../components/studentSuccess";
 
 /* GLOBAL ANIMATION VARIANTS */
 
@@ -50,46 +47,23 @@ const floatingImage = {
 export default function HomeSections() {
   return (
     <div className="bg-[#eaf9ff] overflow-hidden font-body">
-      <HeroCarousel/>
-      <LearningExperience/>
-      <BuildProject/>
-      {/* <JavaCareerCard/> */}
-      <CourseSection />
-      <CoursePlans/>
-      <CertificationSection/>
-      {/*  SUCCESS STORIES  */}
-      <section className="py-24  backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-14 font-heading">
-            Student Success Stories
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <motion.div
-                key={i}
-                className="bg-gray-50 p-6 rounded-2xl shadow"
-                whileHover={{
-                  rotateX: 4,
-                  rotateY: -4,
-                  scale: 1.05,
-                }}
-              >
-                <p className="italic text-gray-700 mb-4">
-                  "This platform changed my career completely."
-                </p>
-                <div className="flex text-yellow-400">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+      <HeroCarousel />
+      <LearningExperience />
+      <CertificationSection />
+      <div className="border-t border-gray-700 my-6"></div>
+      <section id="courses">
+        <CourseSection />
       </section>
-      <WhyChooseUs/>
-      <TrustedBy/>
+      <div className="border-t border-gray-700 my-6"></div>
+      <WhyChooseUs /> 
+      <div className="border-t border-gray-700 my-6"></div>
+      <CoursePlans />
+      <div className="border-t border-gray-700 my-6"></div>
+      <BuildProject />
+      <div className="border-t border-gray-700 my-6"></div>
+      <TrustedBy />
+      <div className="border-t border-gray-700 my-6"></div>
+     <Testimonials /> 
     </div>
   );
 }

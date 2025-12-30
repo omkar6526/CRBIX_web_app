@@ -1,35 +1,58 @@
-import { useState } from "react";
-import { Star } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Star, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "./CartContext";
+import { useNavigate } from "react-router-dom";
 
-export default function CourseCard({ course }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export default function CourseCard({ course, index }) {
+  const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const [hoverLeft, setHoverLeft] = useState(false);
+  const cardRef = useRef(null);
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
+
+  // Determine hover preview position dynamically based on viewport
+  useEffect(() => {
+    const handleResize = () => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      // If the hover would overflow on the right, show on the left
+      if (rect.right + 360 + 16 > viewportWidth) {
+        setHoverLeft(true);
+      } else {
+        setHoverLeft(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <>
-      {/* Card */}
+    <div
+      ref={cardRef}
+      className="relative"
+      onMouseEnter={() => setIsHoverOpen(true)}
+      onMouseLeave={() => setIsHoverOpen(false)}
+    >
+      {/* ================= CARD ================= */}
       <motion.div
-        whileHover={{ y: -8, scale: 1.05 }}
+        whileHover={{ y: -6, scale: 1.03 }}
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
-        className="w-[260px] bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl cursor-pointer group"
-        onClick={() => setIsModalOpen(true)}
+        className="w-[260px] sm:w-[220px] md:w-[240px] lg:w-[260px] bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl cursor-pointer"
+        onClick={() => navigate(`/course/${course.id}`)}
       >
         {/* Image */}
         <div className="relative overflow-hidden">
           <img
             src={course.image}
             alt={course.title}
-            className="h-[160px] w-full object-cover rounded-t-xl transform group-hover:scale-110 transition duration-500"
+            className="h-[160px] w-full object-cover transition-transform duration-500 hover:scale-110"
           />
-
           {course.badge && (
-            <span
-              className={`absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold ${
-                course.badge === "Premium"
-                  ? "bg-yellow-400 text-white"
-                  : "bg-yellow-100 text-yellow-900"
-              }`}
-            >
+            <span className="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold bg-yellow-100 text-yellow-900">
               {course.badge}
             </span>
           )}
@@ -37,86 +60,94 @@ export default function CourseCard({ course }) {
 
         {/* Content */}
         <div className="p-4 space-y-2">
-          <h3 className="font-semibold text-sm leading-snug line-clamp-2 text-gray-800 group-hover:text-blue-600 transition">
+          <h3 className="font-semibold text-sm line-clamp-2 hover:text-blue-600">
             {course.title}
           </h3>
 
           <p className="text-xs text-gray-500">{course.author}</p>
 
-          {/* Rating */}
           <div className="flex items-center gap-1 text-xs">
             <span className="font-semibold text-yellow-600">{course.rating}</span>
             <Star size={14} fill="#fbbf24" stroke="none" />
             <span className="text-gray-400">({course.reviews})</span>
           </div>
 
-          {/* Price */}
-          <div className="flex items-center gap-2 mt-1">
-            <span className="font-bold text-sm text-gray-800">₹{course.price}</span>
-            <span className="text-xs text-gray-400 line-through">{course.originalPrice}</span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-sm">₹{course.price}</span>
+            <span className="text-xs line-through text-gray-400">
+              {course.originalPrice}
+            </span>
           </div>
         </div>
       </motion.div>
 
-      {/* Modal */}
+      {/* ================= HOVER DETAILS ================= */}
       <AnimatePresence>
-        {isModalOpen && (
+        {isHoverOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={() => setIsModalOpen(false)}
+            initial={{ opacity: 0, x: hoverLeft ? -20 : 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: hoverLeft ? -20 : 20 }}
+            className={`absolute top-0 ${
+              hoverLeft ? "right-full -mr-4" : "left-full ml-4"
+            } z-50 w-[340px] sm:w-[300px] md:w-[320px] bg-white rounded-xl shadow-2xl p-4`}
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-white rounded-xl w-11/12 sm:w-3/4 md:w-1/2 p-6 relative"
-              onClick={(e) => e.stopPropagation()} // Prevent modal close on inner click
-            >
-              {/* Close button */}
-              <button
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-lg font-bold"
-                onClick={() => setIsModalOpen(false)}
-              >
-                ✕
-              </button>
+            {/* Hover Image */}
+            <img
+              src={course.image}
+              alt={course.title}
+              className="w-full h-40 object-cover rounded-md mb-3"
+            />
 
-              {/* Course Image */}
-              <img
-                src={course.image}
-                alt={course.title}
-                className="w-full h-48 object-cover rounded-lg mb-4"
-              />
+            <h4 className="font-bold text-sm mb-1 line-clamp-2">{course.title}</h4>
 
-              {/* Course Details */}
-              <h2 className="text-xl font-bold mb-2">{course.title}</h2>
-              <p className="text-gray-600 mb-1">Author: {course.author}</p>
-              <p className="text-yellow-500 font-semibold mb-1">
-                Rating: {course.rating} ⭐ ({course.reviews})
-              </p>
-              <p className="text-gray-800 font-bold mb-2">
-                Price: ₹{course.price}{" "}
-                <span className="line-through text-gray-400">
-                  {course.originalPrice}
-                </span>
-              </p>
+            <div className="flex items-center gap-2 text-xs mb-2">
               {course.badge && (
-                <span className="px-3 py-1 bg-blue-600 text-white rounded text-sm">
+                <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold">
                   {course.badge}
                 </span>
               )}
+              <span className="text-gray-500">
+                {course.updated || "Updated recently"}
+              </span>
+            </div>
 
-              {/* Enroll Button */}
-              <button className="mt-4 w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition">
-                Add To Cart
-              </button>
-            </motion.div>
+            <p className="text-xs text-gray-600 mb-2">
+              {course.hours || "40+ hours"} • {course.level || "All Levels"} •
+              Subtitles
+            </p>
+
+            <p className="text-sm text-gray-700 mb-3">
+              {course.description ||
+                "Master this course with real-world projects and practical learning."}
+            </p>
+
+            {/* What you'll learn */}
+            {course.learnings && (
+              <ul className="space-y-2 mb-4">
+                {course.learnings.slice(0, 3).map((item, i) => (
+                  <li key={i} className="flex gap-2 text-sm">
+                    <Check size={16} className="text-green-600 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <button
+              className="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700"
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(course);
+                navigate("/");
+              }}
+            >
+              Add to cart
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
-}
+} 

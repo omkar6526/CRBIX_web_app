@@ -4,11 +4,64 @@ import logo from "../assets/cdaxxlogo.png";
 import { Link } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { HiOutlineShoppingCart } from "react-icons/hi";
+import { HiChevronRight } from "react-icons/hi";
+
+/* 🔥 EXPLORE DATA */
+const exploreData = {
+  "Learn AI": [
+    "AI Fundamentals",
+    "AI For Professionals",
+    "AI For Developers",
+    "AI For Creatives",
+  ],
+  "Launch a new career": [
+    "Full Stack Developer",
+    "Data Scientist",
+    "UI/UX Designer",
+    "Cloud Engineer",
+  ],
+  "Prepare for certification": [
+    "AWS Certification",
+    "Google Cloud",
+    "Azure Fundamentals",
+  ],
+  "Practice with Role Play": [
+    "Interview Practice",
+    "Client Simulation",
+    "Mock Projects",
+  ],
+  Development: [
+    "Web Development",
+    "Mobile Development",
+    "Game Development",
+  ],
+  Business: [
+    "Entrepreneurship",
+    "Management",
+    "Finance",
+  ],
+  "IT & Software": [
+    "Networking",
+    "Cyber Security",
+    "DevOps",
+  ],
+  Design: [
+    "UI Design",
+    "UX Research",
+    "Graphic Design",
+  ],
+  Marketing: [
+    "Digital Marketing",
+    "SEO",
+    "Content Marketing",
+  ],
+};
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showExplore, setShowExplore] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -16,133 +69,147 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Search:", search);
-  };
-
   return (
-    <header className="sticky top-0 z-50 w-full ">
-      <div
-        className={`transition-all duration-300 border-b border-black/20 ${
-          scrolled ? "bg-[#eaf9ff]" : "bg-[#eaf9ff] shadow-md"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-2 py- flex items-center gap-6">
-          {/* LEFT */}
-          <Link to="/" className="flex-shrink-0">
-            <img src={logo} alt="CDAXX" className="h-16 w-auto" />
+    <header className="sticky top-0 z-50 w-full h-[80px]">
+      <div className="h-full bg-[#eaf9ff]/95 backdrop-blur border-b border-black/10">
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative">
+
+          {/* LOGO */}
+          <Link to="/">
+            <img src={logo} alt="CDAXX" className="h-14 md:h-16" />
           </Link>
 
           {/* CENTER */}
-          <div className="hidden md:flex flex-1 items-center gap-6">
-            <Link
-              to="/explore-courses"
-              className="text-gray-700 font-medium hover:text-black whitespace-nowrap"
+          <div className="hidden lg:flex flex-1 items-center gap-8 mx-4">
+            <Link to="/">
+               <button className="font-medium px-2 py-1 hover:text-blue-600">
+                Home
+              </button>
+              </Link>
+            {/* 🔥 EXPLORE MEGA MENU */}
+            <div
+              className="relative"
+              onMouseEnter={() => setShowExplore(true)}
+              onMouseLeave={() => {
+                setShowExplore(false);
+                setActiveCategory(null);
+              }}
             >
-              Explore
-            </Link>
+              
+              <button className="font-medium px-2 py-1 hover:text-blue-600">
+                Explore
+              </button>
 
-            <form onSubmit={handleSearch} className="relative flex-1">
+              {/* MEGA MENU */}
+              <div
+                className={`absolute left-0 top-full mt-3 bg-white shadow-2xl rounded-xl border z-50
+                  transition-all duration-200 ${
+                    showExplore
+                      ? "opacity-100 visible translate-y-0"
+                      : "opacity-0 invisible -translate-y-2"
+                  }`}
+              >
+                <div className="flex">
+
+                  {/* LEFT – MAIN CATEGORIES */}
+                  <ul className="w-[320px] border-r">
+                    {Object.keys(exploreData).map((category) => (
+                      <li
+                        key={category}
+                        onMouseEnter={() => setActiveCategory(category)}
+                        className={`flex items-center justify-between px-5 py-3 cursor-pointer text-sm font-medium
+                          ${
+                            activeCategory === category
+                              ? "bg-blue-50 text-blue-600"
+                              : "hover:bg-blue-50"
+                          }`}
+                      >
+                        <span>{category}</span>
+                        <HiChevronRight className="text-gray-400" />
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* RIGHT – SUB CATEGORIES (ONLY ON HOVER) */}
+                  {activeCategory && (
+                    <div className="w-[320px] p-5">
+                      <ul className="space-y-3">
+                        {exploreData[activeCategory].map((sub) => (
+                          <li
+                            key={sub}
+                            className="flex items-center justify-between text-sm text-gray-700 hover:text-blue-600 cursor-pointer"
+                          >
+                            <span>{sub}</span>
+                            <HiChevronRight className="text-gray-300" />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                </div>
+              </div>
+            </div>
+
+            {/* SEARCH */}
+            <form className="relative flex-1 max-w-md">
               <input
                 type="text"
                 placeholder="Search for anything"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full px-4 py-2 rounded-full border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2 rounded-full border"
               />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-600"
-              >
+              <button className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
                 Search
               </button>
             </form>
 
-            <Link
-              to="/plans-pricing"
-              className="text-gray-700 font-medium hover:text-black whitespace-nowrap"
-            >
+            <Link to="/plans-pricing" className="font-medium">
               Plans & Pricing
+            </Link>
+
+            <Link to="/privacy-policy" className="font-medium">
+              Privacy & Policy
             </Link>
           </div>
 
           {/* RIGHT */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-4">
             <Link to="/cart">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-1 px-4 py-2 rounded-full border border-gray-300 text-sm font-medium hover:bg-gray-100"
-              >
+              <motion.button className="flex items-center gap-1 px-4 py-2 rounded-full border text-sm">
                 <HiOutlineShoppingCart size={18} />
                 Cart
               </motion.button>
             </Link>
 
             <Link to="/login">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 rounded-full border border-blue-500 text-blue-500 font-medium hover:bg-blue-50"
-              >
+              <button className="px-4 py-2 rounded-full border border-blue-500 text-blue-500">
                 Login
-              </motion.button>
+              </button>
             </Link>
 
             <Link to="/signin">
-              <motion.button
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.92 }}
-                className="px-4 py-2 rounded-full bg-blue-500 text-white font-medium hover:bg-blue-600"
-              >
+              <button className="px-4 py-2 rounded-full bg-blue-500 text-white">
                 Sign up
-              </motion.button>
+              </button>
             </Link>
           </div>
 
-          {/* MOBILE TOGGLE */}
-          <button
-            className="md:hidden ml-auto"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
+          {/* MOBILE */}
+          <button className="lg:hidden" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <HiX size={28} /> : <HiMenu size={28} />}
           </button>
         </div>
 
         {/* MOBILE MENU */}
         {menuOpen && (
-          <div className="md:hidden px-4 pb-4 space-y-4 border-t">
-            <Link to="/explore-courses" onClick={() => setMenuOpen(false)}>
-              Explore
-            </Link>
-
-            <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full px-4 py-2 rounded-full border"
-              />
-            </form>
-
-            <Link to="/plans-pricing" onClick={() => setMenuOpen(false)}>
-              Plans & Pricing
-            </Link>
-
-            <Link to="/cart" onClick={() => setMenuOpen(false)}>
-              Cart
-            </Link>
-
-            <Link to="/login" onClick={() => setMenuOpen(false)}>
-              Login
-            </Link>
-
+          <div className="lg:hidden px-4 pb-6 space-y-4 border-t bg-[#eaf9ff]">
+            <Link to="/explore-courses">Explore</Link>
+            <Link to="/plans-pricing">Plans & Pricing</Link>
+            <Link to="/cart">Cart</Link>
+            <Link to="/login">Login</Link>
             <Link
               to="/signin"
               className="block bg-blue-500 text-white text-center py-2 rounded-full"
-              onClick={() => setMenuOpen(false)}
             >
               Sign up
             </Link>
