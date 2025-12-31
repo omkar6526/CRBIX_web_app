@@ -152,11 +152,11 @@ export default function BuildProject() {
                     behavior: "smooth",
                   });
                 }}
-                className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition"
               >
                 Explore Courses
               </button>
-                  <button className="border border-black px-6 py-3 rounded-lg hover:bg-black hover:text-white transition transform hover:scale-105 active:scale-95">
+                  <button className="border border-blue-600 px-6 py-3 rounded-lg hover:bg-blue-600 hover:text-white transition transform hover:scale-105 active:scale-95">
                     Talk to Expert
                   </button>
                 </motion.div>

@@ -1,14 +1,10 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import start from "../assets/screens/start.PNG";
-import start1 from "../assets/screens/start1.PNG";
-import start2 from "../assets/screens/start2.PNG";
-import start3 from "../assets/screens/start3.PNG";
 // login img
 import login from "../assets/screens/login.PNG";
 // dashbord img
 import dashbord from "../assets/screens/dashbord.PNG";
-import bfgdashbord from "../assets/screens/beforlogin.PNG";
 // Courses img
 import course from "../assets/screens/courses.PNG";
 import course1 from "../assets/screens/courseDetails.PNG";

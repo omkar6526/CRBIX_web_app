@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import logo from "../assets/cdaxxlogo.png";
 import { Link } from "react-router-dom";

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Quote, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { Star, Quote,Heart } from 'lucide-react';
 
 const Testimonials = () => {
   const [activeReview, setActiveReview] = useState(0);
@@ -41,14 +41,6 @@ const Testimonials = () => {
     },
     
   ];
-
-  const nextReview = () => {
-    setActiveReview((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevReview = () => {
-    setActiveReview((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -185,7 +177,7 @@ const Testimonials = () => {
                 className={`bg-white rounded-2xl p-6 shadow-lg border-2 cursor-pointer transition-all duration-300 hover:shadow-xl ${
                   index === activeReview 
                     ? 'border-blue-500 shadow-xl' 
-                    : 'border-transparent hover:border-purple-200'
+                    : 'border-transparent hover:border-blue-200'
                 }`}
                 onClick={() => setActiveReview(index)}
                 whileHover={{ x: 4 }}

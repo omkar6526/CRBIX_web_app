@@ -23,7 +23,7 @@ function App() {
           {/* PAGE CONTENT */}
           <main className="flex-1">
             <Routes>
-              
+              <Route path="login" element={<AuthForm />} />
               <Route path="/" element={<HomeSections />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/course/:id" element={<CourseDetails />} />
