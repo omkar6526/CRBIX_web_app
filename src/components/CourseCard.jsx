@@ -67,7 +67,9 @@ export default function CourseCard({ course, index }) {
           <p className="text-xs text-gray-500">{course.author}</p>
 
           <div className="flex items-center gap-1 text-xs">
-            <span className="font-semibold text-yellow-600">{course.rating}</span>
+            <span className="font-semibold text-yellow-600">
+              {course.rating}
+            </span>
             <Star size={14} fill="#fbbf24" stroke="none" />
             <span className="text-gray-400">({course.reviews})</span>
           </div>
@@ -100,7 +102,9 @@ export default function CourseCard({ course, index }) {
               className="w-full h-40 object-cover rounded-md mb-3"
             />
 
-            <h4 className="font-bold text-sm mb-1 line-clamp-2">{course.title}</h4>
+            <h4 className="font-bold text-sm mb-1 line-clamp-2">
+              {course.title}
+            </h4>
 
             <div className="flex items-center gap-2 text-xs mb-2">
               {course.badge && (
@@ -140,7 +144,10 @@ export default function CourseCard({ course, index }) {
               onClick={(e) => {
                 e.stopPropagation();
                 addToCart(course);
-                navigate("/");
+                setTimeout(() => {
+                  // setShowToast(false);
+                  navigate("/cart");
+                }, 1000);
               }}
             >
               Add to cart
@@ -150,4 +157,4 @@ export default function CourseCard({ course, index }) {
       </AnimatePresence>
     </div>
   );
-} 
+}
