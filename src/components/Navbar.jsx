@@ -123,7 +123,6 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [favoritesCount, setFavoritesCount] = useState(3);
   const { favorites } = useFavorites();
   const navigate = useNavigate();
   const { cart } = useCart();
@@ -399,11 +398,11 @@ export default function Navbar() {
                         className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <HiHeart className="w-4 h-4 text-blue-500" />
+                        <HiHeart className="w-4 h-4 text-blue-600" />
                         My Favourites
-                        {favoritesCount > 0 && (
-                          <span className="ml-auto bg-red-100 text-blue-600 text-xs px-2 py-0.5 rounded-full">
-                            {favoritesCount}
+                        {favorites.length > 0 && (
+                          <span className="ml-auto bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
+                            {favorites.length}
                           </span>
                         )}
                       </Link>
@@ -551,9 +550,9 @@ export default function Navbar() {
                   >
                     <HiHeart className="w-5 h-5 text-blue-500" />
                     Favourites
-                    {favoritesCount > 0 && (
+                    {favorites.length > 0 && (
                       <span className="ml-auto bg-red-100 text-blue-600 text-xs px-2 py-0.5 rounded-full">
-                        {favoritesCount}
+                        {favorites.length}
                       </span>
                     )}
                   </Link>
@@ -648,9 +647,9 @@ export default function Navbar() {
                   >
                     <HiHeart className="w-5 h-5 text-blue-500" />
                     Favourites
-                    {favoritesCount > 0 && (
+                    {favorites.length > 0 && (
                       <span className="ml-auto bg-red-100 text-blue-600 text-xs px-2 py-0.5 rounded-full">
-                        {favoritesCount}
+                        {favorites.length}
                       </span>
                     )}
                   </Link>

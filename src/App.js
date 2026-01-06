@@ -17,6 +17,16 @@ import Payment from "./pages/Payment";
 import { FavoritesProvider } from "./components/FavoritesContext";
 import FavouritesPage from "./pages/FavouritesPage";
 import CoursePlans from "./components/CoursePlans";
+import CourseGridSection from "./components/CourseSection";
+import TermsAndConditions from "./components/TermsAndConditions";
+import Accessibility from "./components/Accessibility";
+import TechOnCDaX from "./components/TechOnCDaX";
+import HelpSupport from "./components/HelpSupport";
+import AboutUs from "./components/aboutUs";
+import Careers from "./components/Careers";
+import ContactUs from "./components/ContactUs";
+import Blogs from "./components/Blogs";
+import Investors from "./components/Investors";
 
 function AppContent() {
   const { authOpen, authMode, openLogin, openSignup, closeAuth } = useAuth();
@@ -52,16 +62,27 @@ function AppContent() {
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<HomeSections />} />
+              <Route path="/courses" element={<CourseGridSection />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/course/:id" element={<CourseDetails />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/plans-pricing" element={<CoursePlans />} />
               <Route path="/favourites" element={<FavouritesPage />} /> 
               <Route path="/payment" element={<Payment />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/accessibility" element={<Accessibility />} />
+              <Route path="/tech-on-cdax" element={<TechOnCDaX />} />
+              <Route path="/help-support" element={<HelpSupport />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/blogs" element={<Blogs />} />
+              <Route path="/investors" element={<Investors />} />
             </Routes>
           </main>
 
           {/* FOOTER */}
+          
           <Footer />
 
           {/* AUTH MODAL */}
