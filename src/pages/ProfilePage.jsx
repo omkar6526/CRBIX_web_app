@@ -13,11 +13,17 @@ export default function ProfilePage() {
   const [editOpen, setEditOpen] = useState(false);
   const [coursesOpen, setCoursesOpen] = useState(false);
 
-useEffect(() => {
-  if (enrolledCourses?.length) {
-    loadCourseStreak(enrolledCourses[0].id); 
-  }
-}, [enrolledCourses]);
+  const getInitials = (name = "") => {
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "";
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
+  useEffect(() => {
+    if (enrolledCourses?.length) {
+      loadCourseStreak(enrolledCourses[0].id);
+    }
+  }, [enrolledCourses]);
 
   const initials =
     profile?.name
@@ -43,8 +49,20 @@ useEffect(() => {
 
       {/* Profile Card */}
       <div className="bg-white rounded-xl shadow p-4 flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold">
-          {initials}
+        <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-blue-600 text-white text-lg font-bold">
+          {profile.avatar ? (
+            <img
+              src={
+                typeof profile.avatar === "string"
+                  ? profile.avatar
+                  : URL.createObjectURL(profile.avatar)
+              }
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            getInitials(profile.name)
+          )}
         </div>
 
         <div className="flex-1">
@@ -81,7 +99,7 @@ useEffect(() => {
       {/* Menu */}
       <div className="mt-6 bg-white rounded-xl shadow divide-y">
         {[
-            ["Settings", () => alert("Coming soon")],
+          ["Settings", () => alert("Coming soon")],
           ["Courses", () => navigate("/courses")],
           ["Certifications", () => alert("Coming soon")],
           ["Payment", () => navigate("/payment")],
@@ -94,7 +112,9 @@ useEffect(() => {
             className="p-4 cursor-pointer hover:bg-gray-50 flex justify-between"
           >
             <span>{label}</span>
-            <span><HiChevronRight className="text-gray-400 text-xl" /></span>
+            <span>
+              <HiChevronRight className="text-gray-400 text-xl" />
+            </span>
           </div>
         ))}
       </div>

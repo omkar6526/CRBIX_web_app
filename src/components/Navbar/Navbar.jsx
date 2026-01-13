@@ -8,16 +8,11 @@ import { HiChevronRight } from "react-icons/hi";
 import { useAuth } from "../Login/AuthContext";
 import { useFavorites } from "./FavoritesContext";
 import { useCart } from "./CartContext";
+import { useProfile } from "../Profile/ProfileContext";
 
 /* EXPLORE DATA */
 const exploreData = {
-  "Web Development ": [
-    "HTML",
-    "CSS",
-    "JavaScript",
-    "React",
-    " Node.js",
-  ],
+  "Web Development ": ["HTML", "CSS", "JavaScript", "React", " Node.js"],
   "Programming Languages": [
     "Java Programming",
     "Python Programming",
@@ -47,31 +42,18 @@ const exploreData = {
     "Tableau",
   ],
   "Data Science": [
-    "Statistics", 
-    "ML basics", 
-    "Python libraries (Pandas, NumPy, Scikit-Learn)"
+    "Statistics",
+    "ML basics",
+    "Python libraries (Pandas, NumPy, Scikit-Learn)",
   ],
-  "UI/UX Design": [
-    "Figma", 
-    "Prototyping", 
-    "User Research",
-    "Design Thinking",
-  ],
+  "UI/UX Design": ["Figma", "Prototyping", "User Research", "Design Thinking"],
   "AI & Machine Learning": [
-    "Machine learning algorithms", 
-    "TensorFlow", 
+    "Machine learning algorithms",
+    "TensorFlow",
     "Neural Networks",
   ],
-  "Database Management": [
-    "MySQL", 
-    "MongoDB", 
-    "PostGrace",
-    ],
-  "Computer Networking": [
-    "Firewall", 
-    "AWS/Azure Cloud", 
-    "CCNA/CCNP/CCA prep ",
-  ],
+  "Database Management": ["MySQL", "MongoDB", "PostGrace"],
+  "Computer Networking": ["Firewall", "AWS/Azure Cloud", "CCNA/CCNP/CCA prep "],
 };
 
 // Logout Confirmation Modal Component
@@ -160,6 +142,15 @@ export default function Navbar() {
   const { favorites } = useFavorites();
   const navigate = useNavigate();
   const { cart } = useCart();
+  const { profile } = useProfile();
+
+  const getAvatar = () => {
+    if (profile?.avatar) {
+      if (typeof profile.avatar === "string") return profile.avatar;
+      return URL.createObjectURL(profile.avatar);
+    }
+    return null;
+  };
 
   //  User check remove karo - AuthContext handle karega
   useEffect(() => {
@@ -346,10 +337,17 @@ export default function Navbar() {
                 <div className="relative user-menu-container">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg hover:shadow-lg transition-all duration-300 group"
-                    title={`${user.firstName} ${user.lastName}`}
+                    className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg"
                   >
-                    {getUserInitials()}
+                    {getAvatar() ? (
+                      <img
+                        src={getAvatar()}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      getUserInitials()
+                    )}
                   </button>
 
                   {/* USER DROPDOWN MENU */}

@@ -12,6 +12,7 @@ export default function StreakGrid() {
   } = useProfile();
 
   const [selectedDay, setSelectedDay] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   if (loadingStreak)
     return <p className="text-sm text-gray-400">Loading streak...</p>;
@@ -21,30 +22,71 @@ export default function StreakGrid() {
 
   const { last30Days = [], currentStreakDays, courseTitle } = streakData;
 
-  // ✅ Today → Past
-  const calendarDays = [...last30Days]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 30);
+  /* ---------------- MONTH CONTROLS ---------------- */
+
+  const monthLabel = currentMonth.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const changeMonth = (direction) => {
+    setCurrentMonth(
+      new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() + direction,
+        1
+      )
+    );
+  };
+
+  /* ---------------- MONTH DAYS ---------------- */
+
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+
+  // total days in month
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // map streak data by date number
+  const streakMap = {};
+  last30Days.forEach((day) => {
+    const d = new Date(day.date);
+    if (d.getMonth() === month && d.getFullYear() === year) {
+      streakMap[d.getDate()] = day;
+    }
+  });
+
+  /* ---------------- COLOR LOGIC ---------------- */
+
+  const getColor = (day) => {
+    if (!day || !day.isActiveDay) return "#E5E7EB";
+
+    const progress = day.progressPercentage || 0;
+
+    if (progress < 25) return "#FEF3C7";
+    if (progress < 50) return "#FDE68A";
+    if (progress < 75) return "#FBBF24";
+    if (progress < 100) return "#F59E0B";
+    return "#10B981";
+  };
 
   return (
     <>
-      {/* HEADER */}
+      {/* ---------------- HEADER ---------------- */}
       <div className="mb-4 flex items-center justify-between">
         <div>
           <p className="font-semibold">{courseTitle}</p>
           <p className="text-xs text-gray-500">
-            {currentStreakDays} day streak •{" "}
-            {calendarDays.filter(d => d.isActiveDay).length}/30 active
+            {currentStreakDays} day streak
           </p>
         </div>
 
-        {/* 🔽 COURSE DROPDOWN */}
         <select
           value={selectedCourseId || ""}
           onChange={(e) => setSelectedCourseId(Number(e.target.value))}
           className="border rounded px-2 py-1 text-sm bg-white"
         >
-          {enrolledCourses.map(course => (
+          {enrolledCourses.map((course) => (
             <option key={course.id} value={course.id}>
               {course.title}
             </option>
@@ -52,40 +94,50 @@ export default function StreakGrid() {
         </select>
       </div>
 
-      {/* GRID */}
-      <div className="grid grid-cols-7 gap-2">
-        {calendarDays.map((day) => {
-          const progress = day.progressPercentage || 0;
-          const isActive = day.isActiveDay;
-          const dayNumber = new Date(day.date).getDate();
+      {/* ---------------- MONTH NAV ---------------- */}
+      <div className="mb-3 flex items-center justify-between">
+        <button
+          onClick={() => changeMonth(-1)}
+          className="px-2 py-1 text-sm border rounded"
+        >
+          ◀
+        </button>
 
-          const getColor = () => {
-            if (!isActive) return "#E5E7EB";
-            if (progress < 25) return "#FEF3C7";
-            if (progress < 50) return "#FDE68A";
-            if (progress < 75) return "#FBBF24";
-            if (progress < 100) return "#F59E0B";
-            return "#10B981";
-          };
+        <p className="font-medium">{monthLabel}</p>
+
+        <button
+          onClick={() => changeMonth(1)}
+          className="px-2 py-1 text-sm border rounded"
+        >
+          ▶
+        </button>
+      </div>
+
+      {/* ---------------- GRID (MONTH DAYS) ---------------- */}
+      <div className="grid grid-cols-7 gap-2">
+        {Array.from({ length: totalDaysInMonth }).map((_, index) => {
+          const dateNumber = index + 1;
+          const dayData = streakMap[dateNumber];
 
           return (
             <div
-              key={day.date}
-              onClick={() => setSelectedDay(day)}
-              className="h-12 w-22 rounded flex items-center justify-center cursor-pointer hover:scale-110 transition font-semibold text-xs"
+              key={dateNumber}
+              onClick={() => dayData && setSelectedDay(dayData)}
+              className={`h-12 rounded flex items-center justify-center text-xs font-semibold transition ${
+                dayData ? "cursor-pointer hover:scale-105" : ""
+              }`}
               style={{
-                backgroundColor: getColor(),
-                color: isActive ? "#111827" : "#6B7280",
+                backgroundColor: getColor(dayData),
+                color: dayData ? "#111827" : "#6B7280",
               }}
-              title={day.date}
             >
-              {dayNumber}
+              {dateNumber}
             </div>
           );
         })}
       </div>
 
-      {/* MODAL */}
+      {/* ---------------- MODAL ---------------- */}
       {selectedDay && (
         <DayDetailsModal
           day={selectedDay}
