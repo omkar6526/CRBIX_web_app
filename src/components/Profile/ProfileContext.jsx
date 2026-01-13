@@ -51,6 +51,33 @@ export const ProfileProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const updateProfile = async (updatedProfile) => {
+  try {
+    setLoading(true);
+
+    /**
+     * 🔴 Abhi backend API nahi hai
+     * to local state update kar rahe hain
+     */
+    setProfile((prev) => ({
+      ...prev,
+      ...updatedProfile,
+      avatar: updatedProfile.avatar || prev?.avatar,
+    }));
+
+    /**
+     * 🟢 Jab backend ready ho:
+     *
+     * const res = await api.put("/profile", updatedProfile);
+     * setProfile(res.data);
+     */
+
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
+  } finally {
+    setLoading(false);
+  }
+};
   /* ================= STREAK API ================= */
 
 const loadCourseStreak = async (courseId) => {
@@ -91,7 +118,7 @@ const loadCourseStreak = async (courseId) => {
     }
 
     console.log("✅ FINAL 30 DAYS:", last30Days);
-    console.log("📘 COURSE ID:", selectedCourseId);
+    
 
     setStreakData({
       ...res.data,
@@ -139,6 +166,7 @@ const loadCourseStreak = async (courseId) => {
         loadCourseStreak,
 
         fetchProfile,
+        updateProfile,
         clearProfile,
       }}
     >
